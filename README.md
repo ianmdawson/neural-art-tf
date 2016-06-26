@@ -58,8 +58,9 @@ You can view the progress on tensorboard by running
 	tensorboard --logdir=/tmp/na-logs
 
 
-## Getting tensforflow to use GPUs on OS X
-https://medium.com/@fabmilo/how-to-compile-tensorflow-with-cuda-support-on-osx-fd27108e27e1
+## Getting TensorFlow to use GPUs on OS X
+[TensorFlow with GPU on a mac](docs/dd32287eeb6859c6668d
+tensorflow_cuda_osx.md)
 
 ## References
 - L. A. Gatys, et al., A neural algorithm of Artistic style, 2015, [http://arxiv.org/abs/1508.06576](http://arxiv.org/abs/1508.06576)
