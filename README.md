@@ -27,11 +27,11 @@ First, download either the VGG model or the illustration2vec model (\*.caffemode
 
 Then, convert the model to a binary format recognizable to TensorFlow:
 
-	python ./kaffe/kaffe.py [path.prototxt] [path.caffemodel] [output-path]
+	python ./kaffe/kaffe.py [path.prototxt] [path.caffemodel] [output-file]
 
 Note that Caffe is *not* required for conversion.
 
-The converter included in this repo (all code inside ./kaffe) is a modified version of (an old version of) https://github.com/ethereon/caffe-tensorflow . The converter is modified to be capable of handling the illusration2vec neural network. Since the newer version of the converter requires preprocessing with the Caffe framework for old-format Caffe models (at the time of writing), I have included the converter which is based on the older code, which is capable of handling old-format Caffe models. 
+The converter included in this repo (all code inside ./kaffe) is a modified version of (an old version of) https://github.com/ethereon/caffe-tensorflow . The converter is modified to be capable of handling the illusration2vec neural network. Since the newer version of the converter requires preprocessing with the Caffe framework for old-format Caffe models (at the time of writing), I have included the converter which is based on the older code, which is capable of handling old-format Caffe models.
 
 ### Step 1: Neural Art
 
@@ -56,6 +56,10 @@ For example:
 You can view the progress on tensorboard by running
 
 	tensorboard --logdir=/tmp/na-logs
+
+
+## Getting tensforflow to use GPUs on OS X
+https://medium.com/@fabmilo/how-to-compile-tensorflow-with-cuda-support-on-osx-fd27108e27e1
 
 ## References
 - L. A. Gatys, et al., A neural algorithm of Artistic style, 2015, [http://arxiv.org/abs/1508.06576](http://arxiv.org/abs/1508.06576)
