@@ -10,7 +10,7 @@ content_image_path, style_image_path, params_path, modeltype, width, alpha, beta
 # The actual calculation
 print "Read images..."
 content_image = read_image(content_image_path, width)
-style_image   = read_image(style_image_path, width)
+style_image = read_image(style_image_path, width)
 g = tf.Graph()
 with g.device(device), g.as_default(), tf.Session(graph=g, config=tf.ConfigProto(allow_soft_placement=True)) as sess:
     print "Load content values..."
@@ -29,7 +29,7 @@ with g.device(device), g.as_default(), tf.Session(graph=g, config=tf.ConfigProto
         st_ = tf.reshape(y[l], st_shape)
         st = tf.matmul(tf.transpose(st_), st_)
         style_image_st_val.append(sess.run(st))  # sess.run(st) is a constant numpy array
-    
+
     print "Construct graph..."
     # Start from white noise
     # gen_image = tf.Variable(tf.truncated_normal(content_image.shape, stddev=20), trainable=True, name='gen_image')
@@ -38,26 +38,26 @@ with g.device(device), g.as_default(), tf.Session(graph=g, config=tf.ConfigProto
     model = getModel(gen_image, params_path, modeltype)
     y = model.y()
     L_content = 0.0
-    L_style   = 0.0
+    L_style = 0.0
     for l in range(len(y)):
         # Content loss
-        L_content += model.alpha[l]*tf.nn.l2_loss(y[l] - content_image_y_val[l])
+        L_content += model.alpha[l] * tf.nn.l2_loss(y[l] - content_image_y_val[l])
         # Style loss
         num_filters = content_image_y_val[l].shape[3]
         st_shape = [-1, num_filters]
         st_ = tf.reshape(y[l], st_shape)
         st = tf.matmul(tf.transpose(st_), st_)
         N = np.prod(content_image_y_val[l].shape).astype(np.float32)
-        L_style += model.beta[l]*tf.nn.l2_loss(st - style_image_st_val[l])/N**2/len(y)
+        L_style += model.beta[l] * tf.nn.l2_loss(st - style_image_st_val[l]) / N**2 / len(y)
     # The loss
-    L = alpha* L_content + beta * L_style
+    L = alpha * L_content + beta * L_style
     # The optimizer
     global_step = tf.Variable(0, trainable=False)
     learning_rate = tf.train.exponential_decay(learning_rate=2.0, global_step=global_step, decay_steps=100, decay_rate=0.94, staircase=True)
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(L, global_step=global_step)
     # A more simple optimizer
     # train_step = tf.train.AdamOptimizer(learning_rate=2.0).minimize(L)
-    
+
     # Set up the summary writer (saving summaries is optional)
     # (do `tensorboard --logdir=/tmp/na-logs` to view it)
     tf.scalar_summary("L_content", L_content)
