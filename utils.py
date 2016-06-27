@@ -57,10 +57,12 @@ def parseArgs():
                         help='alpha (content weight)')
     parser.add_argument('--beta', '-b', default=200.0, type=float,
                         help='beta (style weight)')
+    parser.add_argument('--optimize-simply', '-o', dest='optimize_simply', action='store_true',
+                        help='Use a less complicated training step optimizer')
     parser.add_argument('--device', default="/cpu:0")
     parser.add_argument('--out_dir', default="output")
     args = parser.parse_args()
-    return args.content, args.style, args.modelpath, args.model, args.width, args.alpha, args.beta, args.iters, args.device, args
+    return args.content, args.style, args.modelpath, args.model, args.width, args.alpha, args.beta, args.iters, args.device, args.optimize_simply, args
 
 def getModel(image, params_path, model):
     if model == 'vgg':

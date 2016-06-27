@@ -5,7 +5,7 @@ from utils import read_image, save_image, parseArgs, getModel, add_mean
 import argparse
 
 import time
-content_image_path, style_image_path, params_path, modeltype, width, alpha, beta, num_iters, device, args = parseArgs()
+content_image_path, style_image_path, params_path, modeltype, width, alpha, beta, num_iters, device, optimize_simply, args = parseArgs()
 
 # The actual calculation
 print "Read images..."
@@ -54,9 +54,13 @@ with g.device(device), g.as_default(), tf.Session(graph=g, config=tf.ConfigProto
     # The optimizer
     global_step = tf.Variable(0, trainable=False)
     learning_rate = tf.train.exponential_decay(learning_rate=2.0, global_step=global_step, decay_steps=100, decay_rate=0.94, staircase=True)
-    train_step = tf.train.AdamOptimizer(learning_rate).minimize(L, global_step=global_step)
-    # A more simple optimizer
-    # train_step = tf.train.AdamOptimizer(learning_rate=2.0).minimize(L)
+
+    if optimize_simply:
+        # A more simple optimizer
+        train_step = tf.train.AdamOptimizer(learning_rate=2.0).minimize(L)
+    else:
+        # Complicated optimizer
+        train_step = tf.train.AdamOptimizer(learning_rate).minimize(L, global_step=global_step)
 
     # Set up the summary writer (saving summaries is optional)
     # (do `tensorboard --logdir=/tmp/na-logs` to view it)
@@ -66,7 +70,7 @@ with g.device(device), g.as_default(), tf.Session(graph=g, config=tf.ConfigProto
     tf.image_summary("Generated image (TODO: add mean)", gen_image_addmean)
     summary_op = tf.merge_all_summaries()
     summary_writer = tf.train.SummaryWriter('/tmp/na-logs', graph_def=sess.graph_def)
-    
+
     print "Start calculation..."
     # The optimizer has variables that require initialization as well
     sess.run(tf.initialize_all_variables())
@@ -81,4 +85,3 @@ with g.device(device), g.as_default(), tf.Session(graph=g, config=tf.ConfigProto
             summary_writer.add_summary(summary_str, i)
         print "Iter:", i
         sess.run(train_step)
-
